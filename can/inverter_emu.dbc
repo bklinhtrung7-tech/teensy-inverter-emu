@@ -1,0 +1,77 @@
+VERSION "0.1.0"
+
+
+NS_ :
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	BA_DEF_DEF_
+
+BS_:
+
+BU_: Tester IEMU
+
+
+BO_ 512 IEMU_Cmd: 8 Tester
+ SG_ IEMU_Cmd_CRC : 0|8@1+ (1,0) [0|255] "" IEMU
+ SG_ IEMU_Cmd_Alive : 8|4@1+ (1,0) [0|15] "" IEMU
+ SG_ IEMU_Cmd_Enable : 12|1@1+ (1,0) [0|1] "" IEMU
+ SG_ IEMU_Cmd_Mode : 13|3@1+ (1,0) [0|7] "" IEMU
+ SG_ IEMU_Cmd_Freq : 16|16@1+ (0.1,0) [0|2000] "Hz" IEMU
+ SG_ IEMU_Cmd_Amp : 32|16@1+ (0.01,0) [0|500] "A" IEMU
+ SG_ IEMU_Cmd_Dir : 48|1@1+ (1,0) [0|1] "" IEMU
+ SG_ IEMU_Cmd_FaultReset : 49|1@1+ (1,0) [0|1] "" IEMU
+ SG_ IEMU_Cmd_RampRate : 56|8@1+ (10,0) [0|2550] "A/s" IEMU
+
+BO_ 513 IEMU_FaultCmd: 8 Tester
+ SG_ IEMU_Flt_Type : 0|4@1+ (1,0) [0|15] "" IEMU
+ SG_ IEMU_Flt_Phase : 4|2@1+ (1,0) [0|3] "" IEMU
+ SG_ IEMU_Flt_Enable : 6|1@1+ (1,0) [0|1] "" IEMU
+ SG_ IEMU_Flt_Value : 8|16@1- (0.01,0) [-327.68|327.67] "" IEMU
+ SG_ IEMU_Flt_HarmOrder : 24|8@1+ (1,0) [0|50] "" IEMU
+
+BO_ 768 IEMU_Status: 8 IEMU
+ SG_ IEMU_Sts_State : 0|4@1+ (1,0) [0|15] "" Tester
+ SG_ IEMU_Sts_CmdTimeout : 4|1@1+ (1,0) [0|1] "" Tester
+ SG_ IEMU_Sts_SpiErr : 5|1@1+ (1,0) [0|1] "" Tester
+ SG_ IEMU_Sts_DmaErr : 6|1@1+ (1,0) [0|1] "" Tester
+ SG_ IEMU_Sts_Underrun : 7|1@1+ (1,0) [0|1] "" Tester
+ SG_ IEMU_Sts_ActFreq : 8|16@1+ (0.1,0) [0|2000] "Hz" Tester
+ SG_ IEMU_Sts_ActAmp : 24|16@1+ (0.01,0) [0|500] "A" Tester
+ SG_ IEMU_Sts_CpuLoad : 40|8@1+ (0.5,0) [0|100] "%" Tester
+ SG_ IEMU_Sts_Alive : 48|4@1+ (1,0) [0|15] "" Tester
+ SG_ IEMU_Sts_E2EErr : 52|1@1+ (1,0) [0|1] "" Tester
+ SG_ IEMU_Sts_FaultActive : 53|1@1+ (1,0) [0|1] "" Tester
+
+
+CM_ BU_ Tester "CANoe or python-can tester";
+CM_ BU_ IEMU "Teensy 4.0 inverter current emulator";
+CM_ BO_ 512 "Control command. Cyclic 20 ms. Timeout 200 ms -> RAMP_DOWN.";
+CM_ SG_ 512 IEMU_Cmd_CRC "E2E CRC8 (Profile 1 style, from extension E3). Send 0 before E3.";
+CM_ SG_ 512 IEMU_Cmd_Alive "Alive counter, incremented every frame.";
+CM_ SG_ 512 IEMU_Cmd_Freq "Electrical frequency setpoint.";
+CM_ SG_ 512 IEMU_Cmd_Amp "Phase current amplitude (peak) setpoint.";
+CM_ SG_ 512 IEMU_Cmd_Dir "Phase sequence: 0 = ABC, 1 = ACB.";
+CM_ SG_ 512 IEMU_Cmd_FaultReset "Rising edge clears FAULT state.";
+CM_ SG_ 512 IEMU_Cmd_RampRate "Max amplitude slew rate. 0 = no ramp.";
+CM_ BO_ 513 "Fault injection command (extension E1). Event-triggered.";
+CM_ SG_ 513 IEMU_Flt_Value "Fault parameter. Offset: A. Gain: percent. Noise: A rms. Harmonic: percent of fundamental.";
+CM_ SG_ 513 IEMU_Flt_HarmOrder "Harmonic order for type Harmonic (e.g. 5, 7).";
+CM_ BO_ 768 "Emulator status. Cyclic 100 ms.";
+
+BA_DEF_ BO_ "GenMsgCycleTime" INT 0 10000;
+BA_DEF_ BO_ "GenMsgSendType" ENUM "Cyclic","Event";
+BA_DEF_ "BusType" STRING ;
+BA_DEF_DEF_ "GenMsgCycleTime" 0;
+BA_DEF_DEF_ "GenMsgSendType" "Cyclic";
+BA_DEF_DEF_ "BusType" "CAN";
+BA_ "GenMsgCycleTime" BO_ 512 20;
+BA_ "GenMsgSendType" BO_ 513 1;
+BA_ "GenMsgCycleTime" BO_ 768 100;
+
+VAL_ 512 IEMU_Cmd_Mode 0 "ABC_Sine" 1 "DQ" 2 "DC_Test" 3 "Freq_Sweep" ;
+VAL_ 512 IEMU_Cmd_Dir 0 "ABC" 1 "ACB" ;
+VAL_ 513 IEMU_Flt_Type 0 "None" 1 "Offset" 2 "Gain" 3 "PhaseLoss" 4 "StuckAt" 5 "Noise" 6 "Harmonic" 7 "Imbalance" ;
+VAL_ 513 IEMU_Flt_Phase 0 "A" 1 "B" 2 "C" 3 "All" ;
+VAL_ 768 IEMU_Sts_State 0 "INIT" 1 "STANDBY" 2 "RUN" 3 "RAMP_DOWN" 4 "FAULT" ;

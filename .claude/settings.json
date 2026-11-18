@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cmake:*)",
+      "Bash(ninja:*)",
+      "Bash(ctest:*)",
+      "Bash(pytest:*)",
+      "Bash(python tools/:*)",
+      "Bash(arm-none-eabi-size:*)",
+      "Bash(arm-none-eabi-objdump:*)",
+      "Bash(arm-none-eabi-nm:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git branch:*)"
+    ],
+    "deny": [
+      "Bash(git push:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(git clean:*)",
+      "Bash(rm -rf:*)",
+      "Read(./.env)",
+      "Read(./secrets/**)"
+    ]
+  }
+}

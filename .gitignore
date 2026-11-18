@@ -1,0 +1,44 @@
+# Build output
+build/
+build-*/
+out/
+*.o
+*.d
+*.elf
+*.hex
+*.bin
+*.map
+*.lst
+
+# Generated (keep gen/ sources only if generator is not run in CI)
+# gen/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+
+# Editors / OS
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+
+# Vendor documents (copyrighted, do not commit)
+docs/datasheets/*.pdf
+
+# CANoe runtime files
+canoe/*.blf
+canoe/*.asc
+canoe/*.stcfg
+canoe/**/*.cbf
+
+# Claude Code local settings (personal)
+.claude/settings.local.json
+
+# Secrets
+.env
+secrets/
