@@ -28,7 +28,8 @@ __pycache__/
 Thumbs.db
 
 # Vendor documents (copyrighted, do not commit)
-docs/datasheets/*.pdf
+docs/datasheets/*
+!docs/datasheets/README.md
 
 # CANoe runtime files
 canoe/*.blf
